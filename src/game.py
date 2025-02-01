@@ -20,13 +20,30 @@ class Game:
             "black": {"checks": [], "protective_moves": []},
         }
 
+    def show_uci(self, screen):
+        for row in range(ROWS):
+            for col in range(COLS):
+                display_row = row if self.play_as_white else ROWS - 1 - row
+                display_col = col if self.play_as_white else COLS - 1 - col
+                if (display_row + display_col) % 2 == 0:
+                    color = (0, 0, 0)
+                else:
+                    color = (255, 255, 255)
+                    
+                square = self.board.grid.get_square_by_row_and_col(row, col)
+                font = pygame.font.SysFont("Arial", 14, bold=True)  # Small font for UCI notation
+                uci_text = font.render(square.uci, True, color)
+                text_x = col * SQUARE_SIZE + SQUARE_SIZE - 20  # Right alignment
+                text_y = row * SQUARE_SIZE + 5  # Top alignment
+                screen.blit(uci_text, (text_x, text_y))
+
+
     def show_bg(self, screen):
 
         for row in range(ROWS):
             for col in range(COLS):
                 display_row = row if self.play_as_white else ROWS - 1 - row
                 display_col = col if self.play_as_white else COLS - 1 - col
-
                 if (display_row + display_col) % 2 == 0:
                     color = (234, 235, 200)
                 else:
@@ -37,7 +54,7 @@ class Game:
                     color,
                     (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE),
                 )
-
+                
     def show_pieces(self, screen):
         for row in range(ROWS):
             for col in range(COLS):
@@ -107,69 +124,7 @@ class Game:
     def set_hover(self, row, col):
         self.hovered_square = self.board.grid.get_square_by_row_and_col(row, col)
 
-    # def _verify_if_king_is_checked(self, color):
-    #     checks = self._get_checks(color)
-    #     protective_moves = self._get_protective_moves(color) if checks else []
-    #     self.check[color] = {
-    #         "checks": checks,
-    #         "protective_moves": protective_moves
-    #     }
-
-    # def _get_checks(self, color):
-    #     self._reset_possible_moves()
-    #     checks = []
-    #     for row in range(ROWS):
-    #         for col in range(COLS):
-    #             square: Square = self.board.squares[row][col]
-    #             if square.has_piece() and square.has_enemy(color):
-    #                 self.set_possible_moves(row, col)
-    #                 for move in self.possible_moves:
-    #                     if move.captured_piece and move.captured_piece.name == "King":
-    #                         checks.append(move)
-    #     return checks
-
-    # def _get_protective_moves(self, color):
-    #     """
-    #     Returns a list of all moves that can protect the king of the specified color from being in check.
-    #     """
-    #     protective_moves = []
-
-    #     for row in range(ROWS):
-    #         for col in range(COLS):
-    #             square = self.board.squares[row][col]
-
-    #             # Ensure the square has a piece of the specified color
-    #             if square.has_piece() and square.piece.color == color:
-    #                 piece = square.piece
-
-    #                 # Generate possible moves for this piece
-    #                 self.set_possible_moves(row, col)
-    #                 for move in self.possible_moves:
-    #                     # Save the state before making the move
-    #                     captured_piece = self.board.squares[move.target_row][move.target_col].piece
-    #                     initial_square = self.board.squares[move.initial_row][move.initial_col]
-    #                     target_square = self.board.squares[move.target_row][move.target_col]
-
-    #                     # Apply the move
-    #                     target_square.piece = piece
-    #                     initial_square.piece = None
-
-    #                     # Check if the king is in check
-    #                     if not self._get_checks(color):
-    #                         protective_moves.append(move)
-
-    #                     # Undo the move
-    #                     initial_square.piece = piece
-    #                     target_square.piece = captured_piece
-
-    #     return protective_moves
-
-    # def _find_move(self, row, col):
-    #     for move in self.possible_moves:
-    #         if move.target_row == row and move.target_col == col:
-    #             return move
-    #     return None
-
+   
     def show_ai_best_move(self, screen, best_move):
         if best_move:
             first_uci = best_move[:2]
@@ -178,8 +133,19 @@ class Game:
             second_square = self.board.grid.get_square_by_uci(second_uci)
             initial_row = first_square.row
             initial_col = first_square.col
-            target_row = second_square.row
-            target_col = second_square.col
+            color = (128, 0, 128)
+            
+            if second_square:
+                target_row = second_square.row
+                target_col = second_square.col
+                target_rect = (
+                target_col * SQUARE_SIZE,
+                target_row * SQUARE_SIZE,
+                SQUARE_SIZE,
+                SQUARE_SIZE,
+            )
+                pygame.draw.rect(screen, color, target_rect)
+                
 
             initial_rect = (
                 initial_col * SQUARE_SIZE,
@@ -187,17 +153,10 @@ class Game:
                 SQUARE_SIZE,
                 SQUARE_SIZE,
             )
-            target_rect = (
-                target_col * SQUARE_SIZE,
-                target_row * SQUARE_SIZE,
-                SQUARE_SIZE,
-                SQUARE_SIZE,
-            )
+            
 
-            color = (128, 0, 128)
 
             pygame.draw.rect(screen, color, initial_rect, width=10)
-            pygame.draw.rect(screen, color, target_rect)
 
     def show_possible_moves(self, screen):
         for move in self.board.possible_moves:
