@@ -13,12 +13,12 @@ class ChatGPT:
     def analyze_move(self, board: str, color: str, best_move: str) -> str:
         prompt = f"""I am learning chess and using Stockfish to find the best moves. 
         I am playing as {color}, and I need help understanding why a move is the best.
-        I will only send you the board position and the best move suggested by Stockfish for the {color} color.
-        Here is the current board representation: "{board}". 
-        Stockfish suggests the best move is '{best_move}'. 
-        Can you explain why this is the best move, considering tactics, strategy, and positional factors? 
-        Also, your answer should be short and conscise. it should be max 400 characteres.
-        """
+        I will send you the current board position and the best move suggested by Stockfish for {color}.
+        Here is the board representation (lowercase letters are black, uppercase letters are white, and dots represent empty squares): 
+        "{board}".
+        Stockfish suggests the best move is '{best_move}'.
+        Please explain why this is the best move, considering tactics, strategy, and positional factors. 
+        Keep your answer concise, under 400 characters."""
         client = OpenAI(api_key=self.api_key)
 
         response = client.chat.completions.create(

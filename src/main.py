@@ -28,7 +28,7 @@ class Main:
         self.round = 1
         self.best_move = None
         self.modal_visible = True
-        self.ai_helps_after_round = 3
+        self.ai_helps_after_round = 6
         self.ally_depth = 18
         self.enemy_depth = 5
         self.last_analysis = ""
