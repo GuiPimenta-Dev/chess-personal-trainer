@@ -1,6 +1,6 @@
 # Chess Personal Trainer
 
-Welcome to **Chess Personal Trainer**, a chess game that helps you become a better player! Whether you're a beginner or an advanced player, this project combines the powerful Stockfish engine for move suggestions and ChatGPT for clear, informative explanations of the strategy behind those moves.
+Welcome to **Chess Personal Trainer**, a chess game that helps you become a better player! this project combines the powerful Stockfish engine for move suggestions and ChatGPT for clear, informative explanations of the strategy behind those moves.
 
 ![alt text](chess.png)
 
